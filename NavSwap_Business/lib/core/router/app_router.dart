@@ -16,7 +16,7 @@ import '../../features/ticket/presentation/screens/ticket_raising_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/staff/dashboard',
     routes: [
       GoRoute(
         path: '/login',
@@ -78,8 +78,6 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 final appRouter = GoRouter(
   routes: [
-    // ...existing routes...
-
     GoRoute(
       path: '/staff/scanner',
       builder: (context, state) => const QRScannerScreen(),

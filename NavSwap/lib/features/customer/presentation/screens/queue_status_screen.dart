@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../../providers/queue_provider.dart';
+import '../../data/mock/mock_queue_data.dart';
+import '../../data/models/queue_models.dart';
 
-class QueueStatusScreen extends ConsumerStatefulWidget {
+class QueueStatusScreen extends StatefulWidget {
   final String stationId;
   final String userId;
 
@@ -15,28 +15,26 @@ class QueueStatusScreen extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  ConsumerState<QueueStatusScreen> createState() => _QueueStatusScreenState();
+  State<QueueStatusScreen> createState() => _QueueStatusScreenState();
 }
 
-class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
+class _QueueStatusScreenState extends State<QueueStatusScreen> {
   Timer? _refreshTimer;
   Timer? _countdownTimer;
-  int _remainingSeconds = 0;
+  int _remainingSeconds = 300; // 5 minutes default
+  QueueResponse? _queueResponse;
+  int? _position;
+  int? _estimatedWaitTime;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    // Join queue when screen loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(queueStateProvider.notifier).joinQueue(
-            stationId: widget.stationId,
-            userId: widget.userId,
-          );
-    });
+    _loadMockData();
 
     // Refresh queue status every 10 seconds
     _refreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      ref.read(queueStateProvider.notifier).refreshStatus();
+      _refreshStatus();
     });
 
     // Update countdown every second
@@ -45,19 +43,31 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
     });
   }
 
+  void _loadMockData() {
+    setState(() {
+      _queueResponse = MockQueueData.getMockQueueResponse(
+        userId: widget.userId,
+        stationId: widget.stationId,
+      );
+      _position = MockQueueData.getUserPosition(widget.userId);
+      _estimatedWaitTime = MockQueueData.getEstimatedWaitTime(widget.userId);
+    });
+  }
+
+  void _refreshStatus() {
+    _loadMockData();
+  }
+
   void _updateCountdown() {
-    final queueState = ref.read(queueStateProvider);
-    if (queueState.qrExpiry != null) {
-      final remaining =
-          queueState.qrExpiry!.difference(DateTime.now()).inSeconds;
-      if (remaining > 0) {
-        setState(() {
-          _remainingSeconds = remaining;
-        });
-      } else {
-        // QR expired, refresh
-        ref.read(queueStateProvider.notifier).refreshStatus();
-      }
+    if (_remainingSeconds > 0) {
+      setState(() {
+        _remainingSeconds--;
+      });
+    } else {
+      // QR expired, refresh
+      setState(() {
+        _remainingSeconds = 300; // Reset to 5 minutes
+      });
     }
   }
 
@@ -70,37 +80,10 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final queueState = ref.watch(queueStateProvider);
-
-    if (queueState.isLoading && queueState.qrCode == null) {
+    if (_isLoading && _queueResponse == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Queue Status')),
         body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (queueState.error != null && queueState.qrCode == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Queue Status')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(queueState.error!),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () =>
-                    ref.read(queueStateProvider.notifier).joinQueue(
-                          stationId: widget.stationId,
-                          userId: widget.userId,
-                        ),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
       );
     }
 
@@ -118,7 +101,8 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await ref.read(queueStateProvider.notifier).refreshStatus();
+          await Future.delayed(const Duration(milliseconds: 500));
+          _refreshStatus();
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -140,7 +124,7 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '${queueState.position ?? '-'}',
+                        '${_position ?? '-'}',
                         style: const TextStyle(
                           fontSize: 64,
                           fontWeight: FontWeight.bold,
@@ -154,7 +138,7 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${queueState.estimatedWaitTime ?? '-'} minutes',
+                        '${_estimatedWaitTime ?? '-'} minutes',
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -162,8 +146,8 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
                       ),
                       const SizedBox(height: 20),
                       LinearProgressIndicator(
-                        value: queueState.position != null
-                            ? 1 - (queueState.position! / 10).clamp(0.0, 1.0)
+                        value: _position != null
+                            ? 1 - (_position! / 10).clamp(0.0, 1.0)
                             : 0,
                         backgroundColor: Colors.grey[300],
                         minHeight: 8,
@@ -201,15 +185,13 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
                       _buildInfoRow(
                         Icons.bookmark,
                         'Booked Station',
-                        queueState.stationName != null
-                            ? '${queueState.stationName} • Bay 3'
-                            : 'Not booked',
+                        'Station Alpha • Bay 3',
                       ),
                       const SizedBox(height: 8),
                       _buildInfoRow(
                         Icons.location_on,
                         'Station',
-                        queueState.stationName ?? 'Station Alpha',
+                        'Station Alpha',
                       ),
                       const SizedBox(height: 8),
                       _buildInfoRow(
@@ -224,7 +206,7 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
               const SizedBox(height: 16),
 
               // QR Code Card
-              if (queueState.qrCode != null)
+              if (_queueResponse?.qrCode != null)
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
@@ -246,7 +228,7 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
                             border: Border.all(color: Colors.grey[300]!),
                           ),
                           child: QrImageView(
-                            data: queueState.qrCode!,
+                            data: _queueResponse!.qrCode!,
                             version: QrVersions.auto,
                             size: 200.0,
                             backgroundColor: Colors.white,
@@ -315,7 +297,7 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: queueState.isLoading
+                  onPressed: _isLoading
                       ? null
                       : () {
                           _showCancelDialog(context);
@@ -362,10 +344,8 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
       builder: (context) => AlertDialog(
         title: const Text('Queue Information'),
         content: const Text(
-          'Your position in the queue is updated in real-time. '
-          'The QR code will be needed when it\'s your turn at the station. '
-          'Please arrive at the station before your QR code expires.',
-        ),
+            'Your position in the queue is updated in real-time. '
+            'The QR code will be needed when it\'s your turn at the station. '),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -392,7 +372,8 @@ class _QueueStatusScreenState extends ConsumerState<QueueStatusScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await ref.read(queueStateProvider.notifier).leaveQueue();
+              // Simulate leaving queue
+              await Future.delayed(const Duration(milliseconds: 300));
               if (mounted) {
                 Navigator.pop(context);
               }

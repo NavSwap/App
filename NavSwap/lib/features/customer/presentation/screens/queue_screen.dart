@@ -392,7 +392,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   Icon(Icons.timer, size: 16, color: Colors.orange.shade700),
                   const SizedBox(width: 6),
                   Text(
-                    'Expires in 15:00',
+                    'Keep this QR code ready. It will be needed when it\'s your turn at the station.',
                     style: TextStyle(
                       color: Colors.orange.shade700,
                       fontWeight: FontWeight.w600,

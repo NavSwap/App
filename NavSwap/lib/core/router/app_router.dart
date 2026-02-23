@@ -30,7 +30,7 @@ import '../../features/role/role_selection_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/transporter/dashboard',
+    initialLocation: '/role-select',
     routes: [
       // Splash & Role Selection
       GoRoute(

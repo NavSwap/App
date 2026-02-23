@@ -37,7 +37,7 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
