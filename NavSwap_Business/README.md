@@ -280,19 +280,6 @@ flutter test --coverage
 
 This project is proprietary software developed for NAVSWAP station operations.
 
-## 👥 Team
-
-- **Developed for**: NAVSWAP Operations
-- **Type**: Internal Business Application
-- **Target Users**: Station Staff
-
-## 📞 Support
-
-For technical support or issues:
-- Email: support@navswap.com
-- Contact Station Manager
-- Internal IT Helpdesk
-
 ## 🔄 Version History
 
 ### Version 1.0.0 (Current)

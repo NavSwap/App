@@ -219,13 +219,6 @@ Key packages:
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👥 Team
-
-- **Product Design**: Modern logistics-inspired UI
-- **Backend Integration**: REST + WebSocket APIs
-- **AI/ML**: Station recommendation engine
-- **Mobile Development**: Flutter + Clean Architecture
-
 ## 🔮 Future Enhancements
 
 - [ ] Dark mode support
@@ -237,10 +230,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [ ] Advanced analytics dashboard
 - [ ] Social features (reviews, ratings)
 
-## 📞 Support
-
-For support, email support@navswap.com or join our Slack channel.
-
----
-
-Built with ❤️ using Flutter
