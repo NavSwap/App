@@ -1,77 +1,25 @@
-class UserModel {
-  final String id;
-  final String name;
-  final String email;
-  final String phone;
-  final String role;
-  final String? profileImage;
-  final bool isVerified;
-  final bool isApproved;
-  final DateTime? createdAt;
+/// DEPRECATED: This file is kept for backward compatibility.
+/// Please use the new user models from 'user/user_models.dart'
+///
+/// The new model system provides:
+/// - Type-safe enums for roles and statuses
+/// - Separate Customer and Transporter profiles
+/// - Comprehensive vehicle, address, and payment models
+/// - Full verification and preference management
+///
+/// Migration example:
+/// ```dart
+/// // Old import
+/// // import 'package:navswap/core/models/user_model.dart';
+///
+/// // New import
+/// import 'package:navswap/core/models/user/user_models.dart';
+///
+/// // Old usage
+/// // final user = UserModel(role: 'customer', ...);
+///
+/// // New usage
+/// final user = UserModel(role: UserRole.customer, ...);
+/// ```
 
-  UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.role,
-    this.profileImage,
-    this.isVerified = false,
-    this.isApproved = false,
-    this.createdAt,
-  });
-
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      role: json['role'] as String,
-      profileImage: json['profileImage'] as String?,
-      isVerified: json['isVerified'] as bool? ?? false,
-      isApproved: json['isApproved'] as bool? ?? false,
-      createdAt: json['createdAt'] != null 
-          ? DateTime.parse(json['createdAt'] as String)
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'role': role,
-      'profileImage': profileImage,
-      'isVerified': isVerified,
-      'isApproved': isApproved,
-      'createdAt': createdAt?.toIso8601String(),
-    };
-  }
-
-  UserModel copyWith({
-    String? id,
-    String? name,
-    String? email,
-    String? phone,
-    String? role,
-    String? profileImage,
-    bool? isVerified,
-    bool? isApproved,
-    DateTime? createdAt,
-  }) {
-    return UserModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      role: role ?? this.role,
-      profileImage: profileImage ?? this.profileImage,
-      isVerified: isVerified ?? this.isVerified,
-      isApproved: isApproved ?? this.isApproved,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
-}
+export 'user/user_models.dart';
