@@ -33,8 +33,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/otp',
         builder: (context, state) {
-          final phone = state.extra as String?;
-          return OtpScreen(phoneNumber: phone ?? '');
+          final data = state.extra as Map<String, String>?;
+          return OtpScreen(
+            phoneNumber: data?['phone'] ?? '',
+            role: data?['role'] ?? 'operator',
+          );
         },
       ),
 

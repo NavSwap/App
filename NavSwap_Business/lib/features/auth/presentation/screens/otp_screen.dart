@@ -8,8 +8,10 @@ import '../../../../core/models/user_model.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String phoneNumber;
+  final String role;
 
-  const OtpScreen({super.key, required this.phoneNumber});
+  const OtpScreen(
+      {super.key, required this.phoneNumber, this.role = 'operator'});
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -59,18 +61,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       setState(() => _isLoading = false);
 
       // Mock user data - In production, this should come from API response
-      // For demo purposes, we'll use phone number to determine role
-      // Phone ending in '0' or '5' will be managers, others will be operators
-      final lastDigit = widget.phoneNumber.isNotEmpty
-          ? int.parse(widget.phoneNumber[widget.phoneNumber.length - 1])
-          : 0;
-
-      final isManager = (lastDigit == 0 || lastDigit == 5);
+      // Role is determined from login screen selection
+      final isManager = widget.role == 'manager';
       final userRole = isManager ? 'Station Manager' : 'Station Operator';
 
-      // Create mock user
+      // Create mock user with appropriate data based on role
       final user = UserModel(
-        id: 'user_${widget.phoneNumber}',
+        id: 'user_${widget.phoneNumber}_${widget.role}',
         name: isManager ? 'Amit Sharma' : 'Rajesh Kumar',
         email:
             isManager ? 'amit.sharma@navswap.com' : 'rajesh.kumar@navswap.com',

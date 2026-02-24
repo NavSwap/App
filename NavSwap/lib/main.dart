@@ -6,6 +6,7 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/location_service.dart';
+import 'core/utils/responsive_utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,23 @@ class NavSwapApp extends ConsumerWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
       routerConfig: router,
+      builder: (context, child) {
+        // Constrain text scale factor to prevent extreme scaling and overflow
+        final mediaQueryData = MediaQuery.of(context);
+        final constrainedTextScaleFactor = mediaQueryData.textScaleFactor.clamp(
+          ResponsiveUtils.minTextScaleFactor,
+          ResponsiveUtils.maxTextScaleFactor,
+        );
+
+        return MediaQuery(
+          data: mediaQueryData.copyWith(
+            textScaleFactor: constrainedTextScaleFactor,
+            // Enable bold text accessibility
+            boldText: mediaQueryData.boldText,
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

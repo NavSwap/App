@@ -14,6 +14,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  String _selectedRole = 'operator'; // 'operator' or 'manager'
 
   @override
   void dispose() {
@@ -28,7 +29,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       // Simulate API call
       Future.delayed(const Duration(seconds: 2), () {
         setState(() => _isLoading = false);
-        context.push('/otp', extra: _phoneController.text);
+        context.push('/otp', extra: {
+          'phone': _phoneController.text,
+          'role': _selectedRole,
+        });
       });
     }
   }
@@ -111,6 +115,126 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
 
                 const SizedBox(height: 32),
+
+                // Role Selector
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: AppTheme.darkCard,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.badge_outlined,
+                              color: AppTheme.gradientStart, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Select Your Role',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () =>
+                                  setState(() => _selectedRole = 'operator'),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: _selectedRole == 'operator'
+                                      ? AppTheme.gradientStart.withOpacity(0.1)
+                                      : AppTheme.surfaceColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedRole == 'operator'
+                                        ? AppTheme.gradientStart
+                                        : AppTheme.surfaceColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      color: _selectedRole == 'operator'
+                                          ? AppTheme.gradientStart
+                                          : AppTheme.textSecondary,
+                                      size: 32,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Station\nOperator',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: _selectedRole == 'operator'
+                                            ? AppTheme.gradientStart
+                                            : AppTheme.textSecondary,
+                                        fontWeight: _selectedRole == 'operator'
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () =>
+                                  setState(() => _selectedRole = 'manager'),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: _selectedRole == 'manager'
+                                      ? AppTheme.gradientStart.withOpacity(0.1)
+                                      : AppTheme.surfaceColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedRole == 'manager'
+                                        ? AppTheme.gradientStart
+                                        : AppTheme.surfaceColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.admin_panel_settings,
+                                      color: _selectedRole == 'manager'
+                                          ? AppTheme.gradientStart
+                                          : AppTheme.textSecondary,
+                                      size: 32,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Station\nManager',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: _selectedRole == 'manager'
+                                            ? AppTheme.gradientStart
+                                            : AppTheme.textSecondary,
+                                        fontWeight: _selectedRole == 'manager'
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
 
                 // Phone Number Input
                 TextFormField(
