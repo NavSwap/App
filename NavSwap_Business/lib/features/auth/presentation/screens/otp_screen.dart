@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/providers/role_provider.dart';
+import '../../../../core/models/user_model.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String phoneNumber;
-  
+
   const OtpScreen({super.key, required this.phoneNumber});
 
   @override
@@ -36,7 +38,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     if (value.isNotEmpty && index < 5) {
       _focusNodes[index + 1].requestFocus();
     }
-    
+
     // Check if all fields are filled
     final otp = _controllers.map((c) => c.text).join();
     if (otp.length == 6) {
@@ -52,10 +54,42 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   void _verifyOtp(String otp) {
     setState(() => _isLoading = true);
-    
+
     Future.delayed(const Duration(seconds: 2), () {
       setState(() => _isLoading = false);
-      context.go('/staff/dashboard');
+
+      // Mock user data - In production, this should come from API response
+      // For demo purposes, we'll use phone number to determine role
+      // Phone ending in '0' or '5' will be managers, others will be operators
+      final lastDigit = widget.phoneNumber.isNotEmpty
+          ? int.parse(widget.phoneNumber[widget.phoneNumber.length - 1])
+          : 0;
+
+      final isManager = (lastDigit == 0 || lastDigit == 5);
+      final userRole = isManager ? 'Station Manager' : 'Station Operator';
+
+      // Create mock user
+      final user = UserModel(
+        id: 'user_${widget.phoneNumber}',
+        name: isManager ? 'Amit Sharma' : 'Rajesh Kumar',
+        email:
+            isManager ? 'amit.sharma@navswap.com' : 'rajesh.kumar@navswap.com',
+        phone: '+91 ${widget.phoneNumber}',
+        role: userRole,
+        isVerified: true,
+        isApproved: true,
+        createdAt: DateTime.now(),
+      );
+
+      // Set user in provider
+      ref.read(currentUserProvider.notifier).state = user;
+
+      // Navigate based on role
+      if (isManager) {
+        context.go('/manager/dashboard');
+      } else {
+        context.go('/staff/dashboard');
+      }
     });
   }
 
@@ -78,25 +112,25 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 'Verify OTP',
                 style: Theme.of(context).textTheme.displaySmall,
               ),
-              
+
               const SizedBox(height: 8),
-              
+
               Text(
                 'Enter the 6-digit code sent to',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              
+
               const SizedBox(height: 4),
-              
+
               Text(
                 '+91 ${widget.phoneNumber}',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppTheme.gradientStart,
-                ),
+                      color: AppTheme.gradientStart,
+                    ),
               ),
-              
+
               const SizedBox(height: 48),
-              
+
               // OTP Input Fields
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,9 +176,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   );
                 }),
               ),
-              
+
               const SizedBox(height: 32),
-              
+
               if (_isLoading)
                 Center(
                   child: Column(
@@ -160,9 +194,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                     ],
                   ),
                 ),
-              
+
               const SizedBox(height: 24),
-              
+
               Center(
                 child: TextButton(
                   onPressed: () {
@@ -171,9 +205,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   child: const Text('Resend OTP'),
                 ),
               ),
-              
+
               const Spacer(),
-              
+
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: AppTheme.darkCard,

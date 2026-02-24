@@ -13,11 +13,19 @@ import '../../features/scanner/presentation/screens/qr_scanner_screen.dart';
 import '../../features/scanner/presentation/screens/swap_details_screen.dart';
 import '../../features/scanner/domain/models/verify_response_model.dart';
 import '../../features/ticket/presentation/screens/ticket_raising_screen.dart';
+// Manager Screens
+import '../../features/manager/dashboard/presentation/screens/manager_dashboard_screen.dart';
+import '../../features/manager/staff/presentation/screens/staff_management_screen.dart';
+import '../../features/manager/operations/presentation/screens/operations_screen.dart';
+import '../../features/manager/issues/presentation/screens/issue_resolution_screen.dart';
+import '../../features/manager/profile/presentation/screens/manager_profile_screen.dart';
+import '../../features/manager/attendance/presentation/screens/attendance_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/staff/dashboard',
+    initialLocation: '/login',
     routes: [
+      // Auth Routes
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
@@ -29,6 +37,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return OtpScreen(phoneNumber: phone ?? '');
         },
       ),
+
+      // Station Operator Routes
       GoRoute(
         path: '/staff/dashboard',
         builder: (context, state) => const DashboardScreen(),
@@ -71,6 +81,57 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/staff/history',
         builder: (context, state) => const HistoryScreen(),
+      ),
+
+      // Station Manager Routes
+      GoRoute(
+        path: '/manager/dashboard',
+        builder: (context, state) => const ManagerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/manager/staff',
+        builder: (context, state) => const StaffManagementScreen(),
+      ),
+      GoRoute(
+        path: '/manager/attendance',
+        builder: (context, state) => const AttendanceScreen(),
+      ),
+      GoRoute(
+        path: '/manager/operations',
+        builder: (context, state) => const OperationsScreen(),
+      ),
+      GoRoute(
+        path: '/manager/issues',
+        builder: (context, state) => const IssueResolutionScreen(),
+      ),
+      GoRoute(
+        path: '/manager/profile',
+        builder: (context, state) => const ManagerProfileScreen(),
+      ),
+      // Manager can also access these shared screens
+      GoRoute(
+        path: '/manager/queue',
+        builder: (context, state) => const QueueScreen(),
+      ),
+      GoRoute(
+        path: '/manager/inventory',
+        builder: (context, state) => const InventoryScreen(),
+      ),
+      GoRoute(
+        path: '/manager/faults',
+        builder: (context, state) => const FaultsScreen(),
+      ),
+      GoRoute(
+        path: '/manager/history',
+        builder: (context, state) => const HistoryScreen(),
+      ),
+      GoRoute(
+        path: '/manager/analytics',
+        builder: (context, state) => const HistoryScreen(), // Placeholder
+      ),
+      GoRoute(
+        path: '/manager/reports',
+        builder: (context, state) => const HistoryScreen(), // Placeholder
       ),
     ],
   );

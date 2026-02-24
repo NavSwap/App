@@ -2,6 +2,8 @@
 
 Welcome to the complete documentation for **NAVSWAP BUSINESS**, an enterprise-grade Flutter application for EV battery swap station operations management.
 
+> **🆕 Latest Update**: Role-based access control implemented with Station Operator and Station Manager roles
+
 ---
 
 ## 📚 Documentation Structure
@@ -21,23 +23,61 @@ Get started with a high-level understanding of the project.
 
 ---
 
-### 2. [User Roles & Permissions](USER_ROLES.md)
-Detailed breakdown of all user roles in the system.
+### 2. [User Roles & Permissions](USER_ROLES_NEW.md) 🆕
+**UPDATED**: Dual-role system with distinct functionalities.
 
 **Contents**:
-- Station Operator role and responsibilities
-- Station Manager role and responsibilities
-- Maintenance Staff role and responsibilities
-- Role assignment process
-- Permission matrix
-- KPIs for each role
-- Future role extensions
+- **Station Operator**: Day-to-day operations, battery swaps, QR scanning
+- **Station Manager**: Staff management, issue resolution, operations oversight
+- Role comparison matrix
+- Feature access permissions
+- Navigation structure
+- Authentication flow
+- Demo login credentials
+- Security implementation
 
-**👉 Start here if**: You need to understand access control, responsibilities, or user management.
+**👉 Start here if**: You need to understand the dual-role system and access control.
 
 ---
 
-### 3. [Data Models](DATA_MODELS.md)
+### 3. [Quick Reference Guide](QUICK_REFERENCE.md) 🆕
+Fast access to key features and metrics for both roles.
+
+**Contents**:
+- Login credentials for testing
+- Feature access matrix
+- Key metrics and stats
+- Staff management overview
+- Operations monitor data
+- Issue resolution categories
+- UI component reference
+- Code usage examples
+- Testing checklist
+
+**👉 Start here if**: You need quick lookup of features, metrics, or testing info.
+
+---
+
+### 4. [Implementation Summary](IMPLEMENTATION_SUMMARY.md) 🆕
+Complete technical implementation details of the role-based system.
+
+**Contents**:
+- Role management system
+- Manager dashboard features
+- Staff management implementation
+- Operations monitor functionality
+- Issue resolution center
+- Router configuration
+- Authentication updates
+- Testing instructions
+- Production deployment steps
+- Code quality metrics
+
+**👉 Start here if**: You're a developer implementing or extending the role-based features.
+
+---
+
+### 5. [Data Models](DATA_MODELS.md)
 Comprehensive documentation of all data structures.
 
 **Contents**:
@@ -53,7 +93,7 @@ Comprehensive documentation of all data structures.
 
 ---
 
-### 4. [Features & Functionalities](FEATURES.md)
+### 6. [Features & Functionalities](FEATURES.md)
 In-depth exploration of all application features.
 
 **Contents**:
@@ -74,7 +114,7 @@ In-depth exploration of all application features.
 
 ---
 
-### 5. [API Documentation](API_DOCUMENTATION.md)
+### 7. [API Documentation](API_DOCUMENTATION.md)
 Complete API reference for backend integration.
 
 **Contents**:
@@ -94,7 +134,7 @@ Complete API reference for backend integration.
 
 ---
 
-### 6. [Architecture Documentation](ARCHITECTURE.md)
+### 8. [Architecture Documentation](ARCHITECTURE.md)
 Technical architecture and design patterns.
 
 **Contents**:
