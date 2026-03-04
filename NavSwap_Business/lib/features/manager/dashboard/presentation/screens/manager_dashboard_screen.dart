@@ -181,7 +181,7 @@ class _ManagerDashboardScreenState
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                childAspectRatio: 1.1,
+                childAspectRatio: 1.15,
                 children: [
                   _buildActionCard(
                     context,
@@ -331,24 +331,26 @@ class _ManagerDashboardScreenState
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: AppTheme.darkCard,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon, color: color, size: 32),
+              child: Icon(icon, color: color, size: 28),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
